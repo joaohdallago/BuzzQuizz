@@ -14,6 +14,14 @@ body {
     background-color: #fafafa;
 }
 
+button, ion-icon {
+    cursor: pointer;
+}
+
+.display-none {
+    display: none !important; 
+}
+
 header {
     height: 69px;
 
@@ -83,7 +91,19 @@ main {
     font-size: 20px;
 }
 
-.quizz-creation form {
+.quizz-creation div {
+    width: 100%;
+
+    text-align: center;
+}
+
+.quizz-creation div span {
+    font-size: 20px;
+    font-style: italic;
+    color: #EC362D;
+}
+
+.quizz-creation form, .quizz-creation form div {
     width: 100%;
 
     display: flex;
@@ -91,10 +111,32 @@ main {
     align-items: center;
     gap: 9px;
 
-    padding: 23px 0;
+    padding: 7px 0;
+}
 
+.quizz-creation form {
     background-color: #fff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+}
+
+.quizz-creation header, h3 {
+    all: unset;
+
+    width: 341px;
+
+    display: flex;
+    justify-content: space-between;
+
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.quizz-creation header {
+    margin: 10px 0;
+}
+
+.quizz-creation header ion-icon {
+    font-size: 26px;
 }
 
 .quizz-creation form input {
@@ -124,6 +166,12 @@ main {
     border-radius: 15px;
     color: #FFF5F4;
     background-color: #EC362D;
+}
+
+.quizz-creation .container-questions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 h1 {
