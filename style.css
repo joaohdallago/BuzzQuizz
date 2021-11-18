@@ -63,6 +63,7 @@ header {
     border: 1px dashed #EC362D;
 
     border-radius: 50px;
+    cursor: pointer;
 
     color: #EC362D;
 }
