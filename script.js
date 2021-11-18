@@ -63,7 +63,7 @@ function proceedToCreateQuestions() {
 
         for (let i=0; i < newQuizz.questions.length; i++) {
             questionsString += `
-                <form id="question_${i + 1}">
+                <form>
                     <header>
                         <h3>Pergunta ${i + 1}</h3>
                         <ion-icon name="create-outline" onclick="editQuestion(this)"></ion-icon>
@@ -71,31 +71,31 @@ function proceedToCreateQuestions() {
                     
                     <div class="display-none">
                         <div>
-                            <input type="text" placeholder="Texto da pergunta">
-                            <input type="text" placeholder="Cor de fundo da pergunta">
+                            <input type="text" id="questionTitle" placeholder="Texto da pergunta">
+                            <input type="text" id="questionColor" placeholder="Cor de fundo da pergunta">
                         </div>
 
-                        <div>
+                        <div class="answer">
                             <h3>Resposta correta</h3>
-                            <input type="text" placeholder="Resposta correta">
-                            <input type="text" placeholder="URL da imagem">
+                            <input type="text" id="answerText" placeholder="Resposta correta">
+                            <input type="text" id="answerImg" placeholder="URL da imagem">
                         </div>
 
                         <div>
-                            <div>
+                            <div class="answer">
                                 <h3>Respostas incorretas</h3>
-                                <input type="text" placeholder="Resposta incorreta 1">
-                                <input type="text" placeholder="URL da imagem 1">
+                                <input type="text" id="answerText" placeholder="Resposta incorreta 1">
+                                <input type="text" id="answerImg" placeholder="URL da imagem 1">
                             </div>
 
-                            <div>
-                                <input type="text" placeholder="Resposta incorreta 2">
-                                <input type="text" placeholder="URL da imagem 2">
+                            <div class="answer">
+                                <input type="text" id="answerText" placeholder="Resposta incorreta 2">
+                                <input type="text" id="answerImg" placeholder="URL da imagem 2">
                             </div>
 
-                            <div>
-                                <input type="text" placeholder="Resposta incorreta 3">
-                                <input type="text" placeholder="URL da imagem 3">
+                            <div class="answer">
+                                <input type="text" id="answerText" placeholder="Resposta incorreta 3">
+                                <input type="text" id="answerImg" placeholder="URL da imagem 3">
                             </div>
                         </div>
                     </div>
@@ -125,5 +125,67 @@ function editQuestion(icon) {
 }
 
 function proceedToCreateLevels() {
-    alert('criar niveis')
+    const questions = document.querySelectorAll("form")
+
+    newQuizz.questions = [];
+
+    let isValid = true;
+
+    questions.forEach(
+        question => {
+            const questionData = {
+                title: question.querySelector('#questionTitle').value,
+                color: question.querySelector('#questionColor').value,
+                answers: []
+            }
+    
+            const answers = question.querySelectorAll('.answer');
+            
+            answers.forEach(
+                answer => {
+                    const answerData = {
+                        text: answer.querySelector('#answerText').value,
+                        image: answer.querySelector('#answerImg').value,
+                        isCorrectAnswer: (answer.querySelector('#answerText').placeholder === 'Resposta correta')
+                    }
+
+                    if (
+                        answerData.text.length > 0 &&
+                        isValidURL(answerData.image) 
+                    ) {
+                        questionData.answers.push(answerData);
+                    }
+                }
+            )
+
+            if (
+                questionData.title.length < 20 ||
+                !(/^#[0-9A-F]{6}$/i.test(questionData.color)) ||
+                questionData.answers.length < 2
+            ) {
+                isValid = false;
+            } 
+
+            //conferir se existe uma resposta correta
+            if (isValid) {
+                try {
+                    isValid = questionData.answers[0].isCorrectAnswer;
+                }
+                catch {
+                    isValid = false;
+                }
+            }
+            
+            newQuizz.questions.push(questionData);
+        }
+    )
+
+    console.log(newQuizz)
+    console.log(isValid)
+
+    if (isValid) {
+        console.log('BOA PORRA')
+    } else {
+        document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
+    }
 }
