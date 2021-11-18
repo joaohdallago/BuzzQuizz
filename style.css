@@ -29,6 +29,10 @@ header {
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
+main {
+    padding-top: 37px;
+}
+
 .your-quizzes {
     width: 340px;
     height: 181px;
@@ -41,7 +45,7 @@ header {
 
     padding: 0 45px;
     border: 1.5px dashed #D5D5D5;
-    margin: 31px auto;
+    margin: 0 auto;
 
     border-radius: 5px;
 }
@@ -66,4 +70,58 @@ header {
     cursor: pointer;
 
     color: #EC362D;
+}
+
+.quizz-creation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 29px;
+}
+
+.quizz-creation h2 {
+    font-size: 20px;
+}
+
+.quizz-creation form {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+
+    padding: 23px 0;
+
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+}
+
+.quizz-creation form input {
+    width: 341px;
+    height: 46px;
+
+    border: 1px solid #D1D1D1;
+
+    text-indent: 14px;
+    font-size: 19px;
+
+    border-radius: 5px;
+}
+
+.quizz-creation form input::placeholder {
+    font-style: italic;
+    
+    color: #bababa;
+}
+
+.quizz-creation button {
+    width: 324px;
+    height: 54px;
+
+    font-size: 18px;
+
+    border-radius: 15px;
+    color: #FFF5F4;
+    background-color: #EC362D;
 }
