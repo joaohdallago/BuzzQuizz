@@ -59,24 +59,71 @@ function proceedToCreateQuestions() {
         isValid.questionsQty &&
         isValid.levelsQty
     ) {
+        let questionsString = '';
+
+        for (let i=0; i < newQuizz.questions.length; i++) {
+            questionsString += `
+                <form id="question_${i + 1}">
+                    <header>
+                        <h3>Pergunta ${i + 1}</h3>
+                        <ion-icon name="create-outline" onclick="editQuestion(this)"></ion-icon>
+                    </header>
+                    
+                    <div class="display-none">
+                        <div>
+                            <input type="text" placeholder="Texto da pergunta">
+                            <input type="text" placeholder="Cor de fundo da pergunta">
+                        </div>
+
+                        <div>
+                            <h3>Resposta correta</h3>
+                            <input type="text" placeholder="Resposta correta">
+                            <input type="text" placeholder="URL da imagem">
+                        </div>
+
+                        <div>
+                            <div>
+                                <h3>Respostas incorretas</h3>
+                                <input type="text" placeholder="Resposta incorreta 1">
+                                <input type="text" placeholder="URL da imagem 1">
+                            </div>
+
+                            <div>
+                                <input type="text" placeholder="Resposta incorreta 2">
+                                <input type="text" placeholder="URL da imagem 2">
+                            </div>
+
+                            <div>
+                                <input type="text" placeholder="Resposta incorreta 3">
+                                <input type="text" placeholder="URL da imagem 3">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            `
+        }
+
         main.innerHTML = `
             <div class="quizz-creation">
-                <h2>Crie suas perguntas</h2>
+            <h2>Crie suas perguntas</h2>
 
-                <div>
-                    <span id="errorAlert"></span>
-                    <form>
-                        <input type="text" id="newQuizzTitle" placeholder="Título do seu quizz">
-                        <input type="text" id="newQuizzImg" placeholder="URL da imagem do seu quizz">
-                        <input type="text" id="newQuizzQuestionsQty" placeholder="Quantidade de perguntas do quizz">
-                        <input type="text" id="newQuizzLevelsQty" placeholder="Quantidade de níveis do quizz">
-                    </form>
-                </div>
-
-                <button onclick="proceedToCreateQuestions()">Prosseguir pra criar perguntas</button>
+            <div class="container-questions">
+                <span id="errorAlert"></span>
+                ${questionsString}
             </div>
+
+            <button onclick="proceedToCreateLevels()">Prosseguir pra criar níveis</button>
+        </div>
         `;
     } else {
         document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
     };
 };
+
+function editQuestion(icon) {
+    icon.parentElement.nextElementSibling.classList.toggle('display-none')
+}
+
+function proceedToCreateLevels() {
+    alert('criar niveis')
+}
