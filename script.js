@@ -268,6 +268,8 @@ function rendersQuizzes() {
     promisse.catch((erro) => console.log("deu erro ao renderizar" + erro));
 }
 
+rendersQuizzes()
+
 function loadsQuizzes(resposta) {
     const ulQuizzesList = document.querySelector(".all-quizzes-list");
     const quizzesList = resposta.data;
@@ -277,8 +279,8 @@ function loadsQuizzes(resposta) {
     for (let i = 0; i < quizzesList.length; i++) {
         console.log("tentou")
         ulQuizzesList.innerHTML += `
-            <li class="quizz">
-                <img src="${quizzesList[i].image}" alt="quizz background">
+            <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
+                <img src="${quizzesList[i].image}" alt="thumbnail do quizz">
                 <span>${quizzesList[i].title}</span>
                 <div class="sombra-quizz"></div>
             </li>
@@ -286,4 +288,61 @@ function loadsQuizzes(resposta) {
     }
 }
 
-rendersQuizzes()
+function abreQuizz(quizzClicado) {
+    main.innerHTML = "";
+    
+    const idDoQuizz = quizzClicado.classList[1];
+
+    const promessa = axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${idDoQuizz}`);
+
+    promessa.then((resposta) => {
+        const quizzRecebido = resposta.data;
+        const perguntas = quizzRecebido.questions;
+        const htmlPerguntas = geraPergunta(perguntas);
+        console.log(htmlPerguntas)
+
+        main.innerHTML += `
+            <section class="quizz-clicado">
+                <header class="thumbnaill-quizz-clicado">
+                    <img src="${quizzRecebido.image}" alt="thumbnail do quizz"> 
+                    <span>${quizzRecebido.title}</span>
+                    <div class="sombra-thumb"></div>
+                </header>
+            ${htmlPerguntas}
+        `
+    })
+}
+
+function geraPergunta(listaDePerguntas) {
+    let html;
+
+    for (let i = 0; i < listaDePerguntas.length; i++) {
+        const respostas = listaDePerguntas[i].answers;
+        const htmlRespostas = geraListaDeRespostas(respostas);
+        html += `
+        <section class="pergunta">
+            <header class="titulo-pergunta">
+                <span>${listaDePerguntas[i].title}</span>
+            </header>       
+            <ul class="respostas">
+                ${htmlRespostas}
+            </ul> 
+        </section>
+        ` 
+    }
+    return html
+
+}
+
+function geraListaDeRespostas (respostas) {
+    let htmlDasLi;
+    for (let i = 0; i < respostas.length; i++) {
+        htmlDasLi += `           
+                <li class="resposta">
+                    <img src="${respostas[i].image}" alt="imagem da resposta">
+                    <span>${respostas[i].text}</span>
+                </li>
+        `;
+    }
+    return htmlDasLi
+}
