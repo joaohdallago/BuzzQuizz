@@ -180,11 +180,82 @@ function proceedToCreateLevels() {
         }
     )
 
-    console.log(newQuizz)
-    console.log(isValid)
+    if (isValid) {
+        let levelsString = '';
+
+        for (let i=0; i < newQuizz.levels.length; i++) {
+            levelsString += `
+                <form>
+                    <header>
+                        <h3>Nível ${i + 1}</h3>
+                        <ion-icon name="create-outline" onclick="editQuestion(this)"></ion-icon>
+                    </header>
+                    
+                    <div class="display-none">
+                        <div>
+                            <input type="text" id="levelTitle" placeholder="Título do nível">
+                            <input type="text" id="levelMinValue" placeholder="% de acerto mínima">
+                            <input type="text" id="levelImg" placeholder="URL da imagem do nível">
+                            <textarea type="text" id="levelDescription" placeholder="Descrição do nível"></textarea>
+                        </div>
+                    </div>
+                </form>
+            `
+        }
+
+        main.innerHTML = `
+            <div class="quizz-creation">
+            <h2>Agora, decida os níveis!</h2>
+
+            <div class="container-questions">
+                <span id="errorAlert"></span>
+                ${levelsString}
+            </div>
+
+            <button onclick="finishQuizz()">Finalizar Quizz</button>
+        </div>
+        `;
+    } else {
+        document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
+    }
+}
+
+function finishQuizz() {
+    const levels = document.querySelectorAll("form");
+
+    let isValid = true
+
+    newQuizz.levels = [];
+    let levelsMinValues = [];
+    levels.forEach(
+        level => {
+            const levelData = {
+                    title: level.querySelector('#levelTitle').value,
+                    image: level.querySelector('#levelImg').value,
+                    text: level.querySelector('#levelDescription').value,
+                    minValue: level.querySelector('#levelMinValue').value
+                }
+
+                levelsMinValues.push(levelData.minValue)
+
+            newQuizz.levels.push(levelData);
+
+            if (
+                levelData.title.length < 10 ||
+                levelData.minValue < 0 ||
+                levelData.minValue > 100 ||
+                !isValidURL(levelData.image) ||
+                levelData.text.length < 30
+            ) {
+                isValid = false;
+            }
+        }
+    )
+    
+    isValid = levelsMinValues.includes('0')
 
     if (isValid) {
-        console.log('BOA PORRA')
+        main.innerText = `insira aqui a tela: Seu quizz está pronto`
     } else {
         document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
     }
