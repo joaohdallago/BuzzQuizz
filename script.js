@@ -280,6 +280,7 @@ function loadsQuizzes(resposta) {
             <li class="quizz">
                 <img src="${quizzesList[i].image}" alt="quizz background">
                 <span>${quizzesList[i].title}</span>
+                <div class="sombra-quizz"></div>
             </li>
         `; 
     }
