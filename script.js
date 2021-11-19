@@ -274,7 +274,7 @@ function loadsQuizzes(resposta) {
     const ulQuizzesList = document.querySelector(".all-quizzes-list");
     const quizzesList = resposta.data;
 
-    console.log(quizzesList)
+    // console.log(quizzesList)
     
     for (let i = 0; i < quizzesList.length; i++) {
         console.log("tentou")
@@ -299,7 +299,7 @@ function abreQuizz(quizzClicado) {
         const quizzRecebido = resposta.data;
         const perguntas = quizzRecebido.questions;
         const htmlPerguntas = geraPergunta(perguntas);
-        console.log(htmlPerguntas)
+        // console.log(htmlPerguntas)
 
         main.innerHTML += `
             <section class="quizz-clicado">
@@ -314,7 +314,7 @@ function abreQuizz(quizzClicado) {
 }
 
 function geraPergunta(listaDePerguntas) {
-    let html;
+    let html = "";
 
     for (let i = 0; i < listaDePerguntas.length; i++) {
         const respostas = listaDePerguntas[i].answers;
@@ -335,7 +335,7 @@ function geraPergunta(listaDePerguntas) {
 }
 
 function geraListaDeRespostas (respostas) {
-    let htmlDasLi;
+    let htmlDasLi = "";
     for (let i = 0; i < respostas.length; i++) {
         htmlDasLi += `           
                 <li class="resposta">
