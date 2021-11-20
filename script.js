@@ -277,7 +277,7 @@ function loadsQuizzes(resposta) {
     // console.log(quizzesList)
     
     for (let i = 0; i < quizzesList.length; i++) {
-        console.log("tentou")
+        // console.log("tentou")
         ulQuizzesList.innerHTML += `
             <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
                 <img src="${quizzesList[i].image}" alt="thumbnail do quizz">
@@ -298,7 +298,8 @@ function abreQuizz(quizzClicado) {
     promessa.then((resposta) => {
         const quizzRecebido = resposta.data;
         const perguntas = quizzRecebido.questions;
-        const htmlPerguntas = geraPergunta(perguntas);
+        const htmlPerguntas = geraPergunta(perguntas)[0];
+        const infoDasPerguntas = geraPergunta(perguntas)[1];
         // console.log(htmlPerguntas)
 
         main.innerHTML += `
@@ -310,18 +311,31 @@ function abreQuizz(quizzClicado) {
                 </header>
             ${htmlPerguntas}
         `
+
+        coloreTitulo(infoDasPerguntas);
     })
 }
 
 function geraPergunta(listaDePerguntas) {
     let html = "";
+    let infDasPerguntas = [];
+    let contador = 0;
 
     for (let i = 0; i < listaDePerguntas.length; i++) {
-        const respostas = listaDePerguntas[i].answers;
-        const htmlRespostas = geraListaDeRespostas(respostas);
+        contador++;
+
+        infDasPerguntas.push({etiqueta: `pergunta${contador}`, cor: listaDePerguntas[i].color});
+
+        const arrayDeRespostas = listaDePerguntas[i].answers.map((resposta) => {    
+            // o que vem de listaDePerguntas[i].answers não é um array exatamente, não aceita o sort
+            return resposta;
+        });
+        const respostasSorteadas = arrayDeRespostas.sort(() => {return Math.random() - 0.5;});
+
+        const htmlRespostas = geraListaDeRespostas(respostasSorteadas);
         html += `
         <section class="pergunta">
-            <header class="titulo-pergunta">
+            <header class="titulo-pergunta ${infDasPerguntas[i].etiqueta}">
                 <span>${listaDePerguntas[i].title}</span>
             </header>       
             <ul class="respostas">
@@ -330,7 +344,7 @@ function geraPergunta(listaDePerguntas) {
         </section>
         ` 
     }
-    return html
+    return [html, infDasPerguntas]
 
 }
 
@@ -345,4 +359,11 @@ function geraListaDeRespostas (respostas) {
         `;
     }
     return htmlDasLi
+}
+
+function coloreTitulo (infoDasPerguntas) {
+    for (let i = 0; i < infoDasPerguntas.length; i++) {
+        const tituloDaPergunta = document.querySelector(`.${infoDasPerguntas[i].etiqueta}`);
+        tituloDaPergunta.style.backgroundColor = infoDasPerguntas[i].cor;
+    }
 }
