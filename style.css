@@ -234,8 +234,17 @@ h1 {
 
 }
 
-.quizz img {
+.quizz img, .quizz-creation img {
     width: 340px;
     height: 181px;
     border-radius: 5px;
+}
+
+.go-home {
+    font-size: 18px;
+    color: #818181;
+}
+
+.go-home:hover {
+    cursor: pointer;
 }

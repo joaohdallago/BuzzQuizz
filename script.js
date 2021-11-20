@@ -255,7 +255,14 @@ function finishQuizz() {
     isValid = levelsMinValues.includes('0')
 
     if (isValid) {
-        main.innerText = `insira aqui a tela: Seu quizz está pronto`
+        console.log(newQuizz);
+
+        exportQuizz(newQuizz);
+
+        main.innerText = `
+        loading...
+    `;
+
     } else {
         document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
     }
@@ -284,5 +291,40 @@ function loadsQuizzes(resposta) {
         `; 
     }
 }
+
+function exportQuizz(newQuizzToExport) {
+    const promisseNewQuizz = axios.post(
+        "https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes",
+        newQuizzToExport);
+
+    promisseNewQuizz.then(successQuizzExportation); // 
+    promisseNewQuizz.catch((erro) => console.log("deu erro ao eviar quizz" + erro));
+
+}
+
+function successQuizzExportation() {
+    main.innerHTML = `
+        <div class="quizz-creation">
+            <h2>Seu quizz está pronto!</h2>
+
+            <li class="quizz">
+                <img src="${newQuizz.image}" alt="quizz background">
+                <span>${newQuizz.title}</span>
+            </li>
+
+            <button onclick="goToQuizz()">Acessar Quizz</button>
+            <div class="go-home" onclick="reloadPage()">Voltar pra home </div>
+
+        </div>
+    `;
+}
+
+function reloadPage() {
+    window.location.reload();
+}
+
+// function goToQuizz() {
+
+// }
 
 rendersQuizzes()
