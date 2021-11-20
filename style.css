@@ -235,7 +235,7 @@ h1 {
     word-break: normal;
 }
 
-.quizz img {
+.quizz img, .quizz-creation img {
     width: 340px;
     height: 181px;
     object-fit: cover;
@@ -372,4 +372,13 @@ h1 {
     color: #000000;
 
     word-break: normal;
+}
+
+.go-home {
+    font-size: 18px;
+    color: #818181;
+}
+
+.go-home:hover {
+    cursor: pointer;
 }
