@@ -374,10 +374,6 @@ function getUserQuizzes() {
     }
 }
 
-
-
-
-
 function abreQuizz(quizzClicado) {
     main.innerHTML = "";
             
@@ -388,8 +384,9 @@ function abreQuizz(quizzClicado) {
     promessa.then((resposta) => {
         const quizzRecebido = resposta.data;
         const perguntas = quizzRecebido.questions;
-        const htmlPerguntas = geraPergunta(perguntas)[0];
-        const infoDasPerguntas = geraPergunta(perguntas)[1];
+        const chamadaGeraPergunta = geraPergunta(perguntas)
+        const htmlPerguntas = chamadaGeraPergunta[0];
+        const infoDasPerguntas = chamadaGeraPergunta[1];
         // console.log(htmlPerguntas)
 
         main.innerHTML += `
@@ -423,6 +420,7 @@ function geraPergunta(listaDePerguntas) {
         const respostasSorteadas = arrayDeRespostas.sort(() => {return Math.random() - 0.5;});
         
         const htmlRespostas = geraListaDeRespostas(respostasSorteadas);
+
         html += `
         <section class="pergunta">
         <header class="titulo-pergunta ${infDasPerguntas[i].etiqueta}">
@@ -431,23 +429,49 @@ function geraPergunta(listaDePerguntas) {
         <ul class="respostas">
         ${htmlRespostas}
         </ul> 
+            <header class="titulo-pergunta ${infDasPerguntas[i].etiqueta}">
+                <span>${listaDePerguntas[i].title}</span>
+            </header>       
+            <ul class="respostas ul${marcadorDeUl}" onclick="marcaPClicada(this)">
+                ${htmlRespostas}
+            </ul> 
         </section>
-        ` 
+        `
     }
+
     return [html, infDasPerguntas]
     
 }
 
+let infUlRespostas = []
+let marcadorDeUl = 0
+
 function geraListaDeRespostas (respostas) {
+    let infRespostas = [];
+    
     let htmlDasLi = "";
     for (let i = 0; i < respostas.length; i++) {
+
         htmlDasLi += `           
-        <li class="resposta">
-        <img src="${respostas[i].image}" alt="imagem da resposta">
-        <span>${respostas[i].text}</span>
-        </li>
+            <li class="resposta li${i}" onclick="selecionaResposta(this)">
+                <img src="${respostas[i].image}" alt="imagem da resposta">
+                <span>${respostas[i].text}</span>
+                <div class="sombra-resposta hidden"></div>
+            </li>
         `;
+
+        infRespostas.push({
+            idResposta: i,
+            ehCorreta: respostas[i].isCorrectAnswer
+        })
     }
+    marcadorDeUl++
+
+    infUlRespostas.push({
+        idDaUl: marcadorDeUl,
+        infRespostas
+    })
+
     return htmlDasLi
 }
 
@@ -458,74 +482,62 @@ function coloreTitulo (infoDasPerguntas) {
     }
 }
 
-let quizzTest = {
-	title: "Título do quizz",
-	image: "https://http.cat/411.jpg",
-	questions: [
-        {
-            title: "Título da pergunta 1",
-			color: "#123456",
-			answers: [
-				{
-                    text: "Texto da resposta 1",
-					image: "https://http.cat/411.jpg",
-					isCorrectAnswer: true
-				},
-				{
-                    text: "Texto da resposta 2",
-					image: "https://http.cat/412.jpg",
-					isCorrectAnswer: false
-				}
-			]
-		},
-		{
-            title: "Título da pergunta 2",
-			color: "#123456",
-			answers: [
-                {
-                    text: "Texto da resposta 1",
-					image: "https://http.cat/411.jpg",
-					isCorrectAnswer: true
-				},
-				{
-                    text: "Texto da resposta 2",
-					image: "https://http.cat/412.jpg",
-					isCorrectAnswer: false
-				}
-			]
-		},
-		{
-            title: "Título da pergunta 3",
-			color: "#123456",
-			answers: [
-                {
-					text: "Texto da resposta 1",
-					image: "https://http.cat/411.jpg",
-					isCorrectAnswer: true
-				},
-				{
-                    text: "Texto da resposta 2",
-					image: "https://http.cat/412.jpg",
-					isCorrectAnswer: false
-				}
-			]
-		}
-	],
-	levels: [
-        {
-            title: "Título do nível 1",
-			image: "https://http.cat/411.jpg",
-			text: "Descrição do nível 1",
-			minValue: 0
-		},
-		{
-            title: "Título do nível 2",
-			image: "https://http.cat/412.jpg",
-			text: "Descrição do nível 2",
-			minValue: 50
-		}
-	]
-};
+function marcaPClicada(elPergunta) {
+    elPergunta.classList.add("respondida")
+
+    const identificador = parseInt(elPergunta.classList[1].slice(-1)) 
+    //pega o número em "ulxxx" classe do elemento, o que sai realmente é uma string, por isso dois iguais abaixo
+
+    let i = 0
+    while(identificador !== infUlRespostas[i].idDaUl){
+        i++
+    }
+
+    const informacoesDaLi = infUlRespostas[i].infRespostas
+
+    for (let j = 0; j < informacoesDaLi.length; j++) {
+        const liResposta = document.querySelector(`.ul${identificador} .li${informacoesDaLi[j].idResposta}`);
+        //percorre todas as li's da ulPergunta clicada
+        const spanDaLi = liResposta.children[1]
+
+        if(informacoesDaLi[j].ehCorreta === true) {
+            spanDaLi.style.color = "#009C22" 
+        } else {
+            spanDaLi.style.color = "#FF0B0B" 
+        }   
+    }
+
+    const proximaPergunta = document.querySelector(`.pergunta${identificador + 1}`);
+    console.log(proximaPergunta)
+    if (proximaPergunta !== null) {
+    setTimeout(() => {
+        proximaPergunta.scrollIntoView()
+    }, 2000) 
+    }
+}
+
+function selecionaResposta(resposta) {
+    resposta.classList.add("selecionada");
+
+    setTimeout(() => {
+        //selecionaResposta precisa esperar pra que a marcaPClicada cumpra sua tarefa se não o elemento pesquisado abaixo não será encontrado
+        const perguntaResposdida = document.querySelector(".respondida");
+
+        const respostas = perguntaResposdida.children;
+
+        for (let i = 0; i < respostas.length; i++) {
+            const sombraResposta = respostas[i].lastElementChild;
+            
+            const ehASelecionada = respostas[i].classList.contains("selecionada");
+
+            if(!ehASelecionada) {
+                sombraResposta.classList.remove("hidden");
+            }
+            
+        }
+        resposta.classList.remove("selecionada")
+        perguntaResposdida.classList.remove("respondida")
+    }, 0.0000001)
+}
 
 rendersQuizzes();
-//exportQuizz(quizzTest);
