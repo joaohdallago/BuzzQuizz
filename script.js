@@ -336,26 +336,36 @@ function exportQuizz(newQuizzToExport) {
 }
     
 function successQuizzExportation(response) {
+    getUserQuizzes();
+
+    const quizzJustCreated = response.data.id;
+    console.log(quizzJustCreated);
+    userQuizzesId.push(quizzJustCreated);
+    localStorage.setItem("id", JSON.stringify(`${userQuizzesId}`));
+
+   /* ulQuizzesList.innerHTML += `
+        <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
+        <img src="${quizzesList[i].image}" alt="thumbnail do quizz">
+        <span>${quizzesList[i].title}</span>
+        <div class="sombra-quizz"></div>
+        </li>
+        `; 
+*/
     main.innerHTML = `
     <div class="quizz-creation">
         <h2>Seu quizz está pronto!</h2>
         
-        <li class="quizz">
+        <li class="quizz ${quizzJustCreated}">
         <img src="${newQuizz.image}" alt="quizz background">
         <span>${newQuizz.title}</span>
+        <div class="sombra-quizz"></div>
         </li>
         
-        <button onclick="goToQuizz()">Acessar Quizz</button>
+        <button onclick="abreQuizz(document.querySelector('.quizz'))">Acessar Quizz</button>
         <div class="go-home" onclick="reloadPage()">Voltar pra home </div>
         
     </div>
     `;
-
-    getUserQuizzes();
-
-    userQuizzesId.push(response.data.id);
-    console.log(JSON.stringify(`${userQuizzesId}`));
-    localStorage.setItem("id", JSON.stringify(`${userQuizzesId}`));
 }
     
 function reloadPage() {
@@ -375,6 +385,7 @@ function getUserQuizzes() {
 }
 
 function abreQuizz(quizzClicado) {
+    console.log(quizzClicado);
     main.innerHTML = "";
             
     const idDoQuizz = quizzClicado.classList[1];
