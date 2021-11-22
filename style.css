@@ -37,6 +37,10 @@ header {
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
+header span:hover {
+    cursor: pointer;
+}
+
 main {
     padding-top: 37px;
 }
@@ -47,13 +51,12 @@ main {
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
-    gap: 30px;
 
     padding: 0 45px;
     border: 1.5px dashed #D5D5D5;
-    margin: 0 auto;
+    margin: 0 auto 35px auto;
 
     border-radius: 5px;
 }
@@ -183,8 +186,6 @@ main {
 }
 
 h1 {
-    padding: 35px 0 14px 18px;
-
     font-size: 20px;
     line-height: 23px;
     
@@ -193,13 +194,17 @@ h1 {
     color: #000000;
 }
 
-.all-quizzes {
+.all-quizzes, .your-quizzes-updated {
     width: 340px;
     margin: 0 auto;
 
 }
 
-.all-quizzes-list {
+.all-quizzes h1 {
+    margin: 14px 0;
+}
+
+.all-quizzes-list, .your-quizzes-list {
     list-style-type: none;
     
     margin-bottom: 30px;
@@ -208,7 +213,23 @@ h1 {
     flex-direction: column;
     gap: 14px;
 
+}
 
+.your-quizzes-list {
+   margin-bottom: 20px;
+}
+
+.your-quizzes-title {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+.your-quizzes-title ion-icon {
+    font-size: 30px;
+    color: #EC362D;
 }
 
 .quizz {

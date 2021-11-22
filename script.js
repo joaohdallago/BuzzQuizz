@@ -255,13 +255,9 @@ function finishQuizz() {
     isValid = levelsMinValues.includes('0')
 
     if (isValid) {
-        console.log(newQuizz);
-
         exportQuizz(newQuizz);
 
-        main.innerText = `
-        loading...
-    `;
+        main.innerText = `loading...`;
 
     } else {
         document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
@@ -269,74 +265,126 @@ function finishQuizz() {
 }
 
 function rendersQuizzes() {
+    getUserQuizzes();
+
     const promisse = axios.get("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes");
 
     promisse.then(loadsQuizzes);
     promisse.catch((erro) => console.log("deu erro ao renderizar" + erro));
 }
 
-rendersQuizzes()
+let quizzesList;
 
 function loadsQuizzes(resposta) {
     const ulQuizzesList = document.querySelector(".all-quizzes-list");
-    const quizzesList = resposta.data;
+    const ulYourQuizzesList = document.querySelector(".your-quizzes-list");
 
-    // console.log(quizzesList)
+    quizzesList = resposta.data;
     
+    let userQuizzCounter = userQuizzesId.length - 1;
+
     for (let i = 0; i < quizzesList.length; i++) {
-        // console.log("tentou")
-        ulQuizzesList.innerHTML += `
-            <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
+        if (userQuizzesId.length != 0) {
+            if (quizzesList[i].id === userQuizzesId[userQuizzCounter]) {
+                if (userQuizzesId[userQuizzesId.length - 1] === quizzesList[i].id){
+                    ulYourQuizzesList.previousElementSibling.remove();
+                    ulYourQuizzesList.previousElementSibling.remove();
+                    ulYourQuizzesList.parentElement.classList.remove("your-quizzes");
+                    ulYourQuizzesList.parentElement.classList.add("your-quizzes-updated");
+
+                    ulYourQuizzesList.innerHTML = `
+                    <div class="your-quizzes-title">
+                        <h1>Seus Quizzes</h1>
+                        <ion-icon onclick="openCreateQuizz()" name="add-circle"></ion-icon>
+                    </div>
+                    
+                    `; 
+                }
+
+                ulYourQuizzesList.innerHTML += `
+                
+                <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
                 <img src="${quizzesList[i].image}" alt="thumbnail do quizz">
                 <span>${quizzesList[i].title}</span>
                 <div class="sombra-quizz"></div>
-            </li>
+                </li>
+                `; 
+                
+                userQuizzCounter--;
+              }
+        }
+            
+        // console.log("tentou")
+        ulQuizzesList.innerHTML += `
+        <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
+        <img src="${quizzesList[i].image}" alt="thumbnail do quizz">
+        <span>${quizzesList[i].title}</span>
+        <div class="sombra-quizz"></div>
+        </li>
         `; 
     }
 }
+
 
 function exportQuizz(newQuizzToExport) {
     const promisseNewQuizz = axios.post(
         "https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes",
         newQuizzToExport);
-
-    promisseNewQuizz.then(successQuizzExportation); // 
-    promisseNewQuizz.catch((erro) => console.log("deu erro ao eviar quizz" + erro));
-
+        
+        promisseNewQuizz.then(successQuizzExportation); // 
+        promisseNewQuizz.catch((erro) => console.log("deu erro ao eviar quizz" + erro));    
 }
-
-function successQuizzExportation() {
+    
+function successQuizzExportation(response) {
     main.innerHTML = `
-        <div class="quizz-creation">
-            <h2>Seu quizz está pronto!</h2>
-
-            <li class="quizz">
-                <img src="${newQuizz.image}" alt="quizz background">
-                <span>${newQuizz.title}</span>
-            </li>
-
-            <button onclick="goToQuizz()">Acessar Quizz</button>
-            <div class="go-home" onclick="reloadPage()">Voltar pra home </div>
-
-        </div>
+    <div class="quizz-creation">
+        <h2>Seu quizz está pronto!</h2>
+        
+        <li class="quizz">
+        <img src="${newQuizz.image}" alt="quizz background">
+        <span>${newQuizz.title}</span>
+        </li>
+        
+        <button onclick="goToQuizz()">Acessar Quizz</button>
+        <div class="go-home" onclick="reloadPage()">Voltar pra home </div>
+        
+    </div>
     `;
-}
 
+    getUserQuizzes();
+
+    userQuizzesId.push(response.data.id);
+    console.log(JSON.stringify(`${userQuizzesId}`));
+    localStorage.setItem("id", JSON.stringify(`${userQuizzesId}`));
+}
+    
 function reloadPage() {
     window.location.reload();
 }
 
-// function goToQuizz() {
+let userQuizzesId = [];
 
-// }
+function getUserQuizzes() {
+    if (localStorage.getItem("id") === null) {
+        userQuizzesId = [];
+
+    } else {
+        let userQuizzesIdString = "[" + localStorage.getItem("id").replaceAll(`"`, ``) + "]";
+        userQuizzesId = JSON.parse(userQuizzesIdString);
+    }
+}
+
+
+
+
 
 function abreQuizz(quizzClicado) {
     main.innerHTML = "";
-    
+            
     const idDoQuizz = quizzClicado.classList[1];
-
+            
     const promessa = axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${idDoQuizz}`);
-
+    
     promessa.then((resposta) => {
         const quizzRecebido = resposta.data;
         const perguntas = quizzRecebido.questions;
@@ -345,15 +393,15 @@ function abreQuizz(quizzClicado) {
         // console.log(htmlPerguntas)
 
         main.innerHTML += `
-            <section class="quizz-clicado">
-                <header class="thumbnaill-quizz-clicado">
-                    <img src="${quizzRecebido.image}" alt="thumbnail do quizz"> 
-                    <span>${quizzRecebido.title}</span>
-                    <div class="sombra-thumb"></div>
-                </header>
-            ${htmlPerguntas}
+        <section class="quizz-clicado">
+        <header class="thumbnaill-quizz-clicado">
+        <img src="${quizzRecebido.image}" alt="thumbnail do quizz"> 
+        <span>${quizzRecebido.title}</span>
+        <div class="sombra-thumb"></div>
+        </header>
+        ${htmlPerguntas}
         `
-
+        
         coloreTitulo(infoDasPerguntas);
     })
 }
@@ -362,42 +410,42 @@ function geraPergunta(listaDePerguntas) {
     let html = "";
     let infDasPerguntas = [];
     let contador = 0;
-
+    
     for (let i = 0; i < listaDePerguntas.length; i++) {
         contador++;
-
+        
         infDasPerguntas.push({etiqueta: `pergunta${contador}`, cor: listaDePerguntas[i].color});
-
+        
         const arrayDeRespostas = listaDePerguntas[i].answers.map((resposta) => {    
             // o que vem de listaDePerguntas[i].answers não é um array exatamente, não aceita o sort
             return resposta;
         });
         const respostasSorteadas = arrayDeRespostas.sort(() => {return Math.random() - 0.5;});
-
+        
         const htmlRespostas = geraListaDeRespostas(respostasSorteadas);
         html += `
         <section class="pergunta">
-            <header class="titulo-pergunta ${infDasPerguntas[i].etiqueta}">
-                <span>${listaDePerguntas[i].title}</span>
-            </header>       
-            <ul class="respostas">
-                ${htmlRespostas}
-            </ul> 
+        <header class="titulo-pergunta ${infDasPerguntas[i].etiqueta}">
+        <span>${listaDePerguntas[i].title}</span>
+        </header>       
+        <ul class="respostas">
+        ${htmlRespostas}
+        </ul> 
         </section>
         ` 
     }
     return [html, infDasPerguntas]
-
+    
 }
 
 function geraListaDeRespostas (respostas) {
     let htmlDasLi = "";
     for (let i = 0; i < respostas.length; i++) {
         htmlDasLi += `           
-                <li class="resposta">
-                    <img src="${respostas[i].image}" alt="imagem da resposta">
-                    <span>${respostas[i].text}</span>
-                </li>
+        <li class="resposta">
+        <img src="${respostas[i].image}" alt="imagem da resposta">
+        <span>${respostas[i].text}</span>
+        </li>
         `;
     }
     return htmlDasLi
@@ -409,3 +457,75 @@ function coloreTitulo (infoDasPerguntas) {
         tituloDaPergunta.style.backgroundColor = infoDasPerguntas[i].cor;
     }
 }
+
+let quizzTest = {
+	title: "Título do quizz",
+	image: "https://http.cat/411.jpg",
+	questions: [
+        {
+            title: "Título da pergunta 1",
+			color: "#123456",
+			answers: [
+				{
+                    text: "Texto da resposta 1",
+					image: "https://http.cat/411.jpg",
+					isCorrectAnswer: true
+				},
+				{
+                    text: "Texto da resposta 2",
+					image: "https://http.cat/412.jpg",
+					isCorrectAnswer: false
+				}
+			]
+		},
+		{
+            title: "Título da pergunta 2",
+			color: "#123456",
+			answers: [
+                {
+                    text: "Texto da resposta 1",
+					image: "https://http.cat/411.jpg",
+					isCorrectAnswer: true
+				},
+				{
+                    text: "Texto da resposta 2",
+					image: "https://http.cat/412.jpg",
+					isCorrectAnswer: false
+				}
+			]
+		},
+		{
+            title: "Título da pergunta 3",
+			color: "#123456",
+			answers: [
+                {
+					text: "Texto da resposta 1",
+					image: "https://http.cat/411.jpg",
+					isCorrectAnswer: true
+				},
+				{
+                    text: "Texto da resposta 2",
+					image: "https://http.cat/412.jpg",
+					isCorrectAnswer: false
+				}
+			]
+		}
+	],
+	levels: [
+        {
+            title: "Título do nível 1",
+			image: "https://http.cat/411.jpg",
+			text: "Descrição do nível 1",
+			minValue: 0
+		},
+		{
+            title: "Título do nível 2",
+			image: "https://http.cat/412.jpg",
+			text: "Descrição do nível 2",
+			minValue: 50
+		}
+	]
+};
+
+rendersQuizzes();
+//exportQuizz(quizzTest);

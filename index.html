@@ -9,13 +9,16 @@
     <title>BuzzQuizz</title>
 </head>
 <body>
-    <header>BuzzQuizz</header>
+    <header>
+        <span onclick="reloadPage()">BuzzQuizz</span>
+    </header>
 
     <main>
         <section class="your-quizzes">
             <span>Você não criou nenhum quizz ainda :(</span>
     
             <button onclick="openCreateQuizz()">Criar quizz</button>
+            <ul class="your-quizzes-list"></ul>
         </section>
 
         <section class="all-quizzes">
