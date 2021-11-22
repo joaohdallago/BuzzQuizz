@@ -252,7 +252,9 @@ function finishQuizz() {
         }
     )
     
-    isValid = levelsMinValues.includes('0')
+    if (isValid) {
+        isValid = levelsMinValues.includes('0')
+    }
 
     if (isValid) {
         exportQuizz(newQuizz);
