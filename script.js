@@ -117,6 +117,7 @@ function proceedToCreateQuestions() {
         `;
     } else {
         document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
+        window.scrollTo(0, 0)
     };
 };
 
@@ -217,6 +218,7 @@ function proceedToCreateLevels() {
         `;
     } else {
         document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
+        window.scrollTo(0, 0)
     }
 }
 
@@ -263,6 +265,7 @@ function finishQuizz() {
 
     } else {
         document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
+        window.scrollTo(0, 0)
     }
 }
 
@@ -304,12 +307,20 @@ function loadsQuizzes(resposta) {
                 }
 
                 ulYourQuizzesList.innerHTML += `
+
+                <div class="container-your-individual-quizz">
+                    <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
+                        <img src="${quizzesList[i].image}" alt="thumbnail do quizz">
+                        <span>${quizzesList[i].title}</span>
+                        <div class="sombra-quizz"></div>
+                    </li>
+                    <div class="container-edit-delete">
+                            <ion-icon name="create-outline" onclick="alert()"></ion-icon>
+                            <ion-icon name="trash-outline"></ion-icon>
+                    </div>
+                </div>
                 
-                <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
-                <img src="${quizzesList[i].image}" alt="thumbnail do quizz">
-                <span>${quizzesList[i].title}</span>
-                <div class="sombra-quizz"></div>
-                </li>
+                
                 `; 
                 
                 userQuizzCounter--;
