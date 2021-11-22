@@ -314,7 +314,6 @@ function loadsQuizzes(resposta) {
               }
         }
             
-        // console.log("tentou")
         ulQuizzesList.innerHTML += `
         <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
         <img src="${quizzesList[i].image}" alt="thumbnail do quizz">
@@ -343,14 +342,6 @@ function successQuizzExportation(response) {
     userQuizzesId.push(quizzJustCreated);
     localStorage.setItem("id", JSON.stringify(`${userQuizzesId}`));
 
-   /* ulQuizzesList.innerHTML += `
-        <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
-        <img src="${quizzesList[i].image}" alt="thumbnail do quizz">
-        <span>${quizzesList[i].title}</span>
-        <div class="sombra-quizz"></div>
-        </li>
-        `; 
-*/
     main.innerHTML = `
     <div class="quizz-creation">
         <h2>Seu quizz está pronto!</h2>
