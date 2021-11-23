@@ -325,6 +325,8 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 24px;
+    
+    margin-bottom: 24px;
 }
 
 .thumbnaill-quizz-clicado {
@@ -420,7 +422,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 1px;
 }
 
 .resposta {
@@ -589,6 +591,75 @@ h1 {
         width: 600px;
 
         margin: 0 auto;
+    }
+
+}
+@media (min-width: 1000px) {
+    .your-quizzes {
+        width: 80%;
+
+        margin: 40px auto 77px auto;
+
+    }
+    
+    .your-quizzes span {
+        max-width: 230px;
+    }
+
+    .all-quizzes {
+        width: 80%;
+    }
+
+    .quizz {
+        width: 340px;
+        height: 181px;
+        border-radius: 5px;
+        
+        position: relative;
+    
+        overflow: hidden;
+    }
+
+    .all-quizzes-list {
+        
+        margin-bottom: 30px;
+    
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 14px;
+    
+    }
+
+    .pergunta {
+        max-width: 70%;
+        margin: 0 auto;
+    }
+
+    .resposta {
+        min-width: 330px;
+        min-height: 175px;
+    }
+
+    .resultado-quizz {
+        max-width: 70%;
+        margin: 0 auto;
+
+        gap: 9px;
+    }
+
+    .resultado-quizz img {
+        width: 50%;
+    }
+
+    .resultado-quizz p {
+        max-width: 50%;
+    }
+
+    .conteudo-resultado {
+        display: flex;
+        gap: 9px;
     }
 
 }
