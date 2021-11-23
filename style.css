@@ -474,7 +474,7 @@ h1 {
     align-items: flex-start;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 1100px) {
     .quizz-creation {
         width: 600px;
 

@@ -1,5 +1,6 @@
 const main = document.querySelector('main');
 const loadingPacman = document.querySelector('.pacman-loading');
+console.log(loadingPacman);
 
 let newQuizz = {
 	title: "",
@@ -9,6 +10,8 @@ let newQuizz = {
 }
 
 function openCreateQuizz() {
+    stopLoading();
+
     main.innerHTML = `
     <div class="quizz-creation">
         <h2>Comece pelo começo</h2>
@@ -569,13 +572,13 @@ function selecionaResposta(resposta) {
 }
 
 function startLoading() {
-    main.classList.add("hidden");
-    loadingPacman.classList.remove("hidden");
+    main.classList.add("display-none");
+    loadingPacman.classList.remove("display-none");
 }
 
 function stopLoading() {
-    loadingPacman.classList.add("hidden");
-    main.classList.remove("hidden");
+    loadingPacman.classList.add("display-none");
+    main.classList.remove("display-none");
 }
 
 
