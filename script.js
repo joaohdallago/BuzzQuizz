@@ -455,12 +455,6 @@ function geraPergunta(listaDePerguntas) {
 
         html += `
         <section class="pergunta">
-        <header class="titulo-pergunta ${infDasPerguntas[i].etiqueta}">
-        <span>${listaDePerguntas[i].title}</span>
-        </header>       
-        <ul class="respostas">
-        ${htmlRespostas}
-        </ul> 
             <header class="titulo-pergunta ${infDasPerguntas[i].etiqueta}">
                 <span>${listaDePerguntas[i].title}</span>
             </header>       
@@ -615,6 +609,7 @@ function selecionaResposta(resposta) {
 }
 
 function marcaAcerto(respostaClicada) {
+    console.log(respostaClicada)
     const identificaUl = parseInt(respostaClicada.parentElement.classList[1].slice(-1));
     const identificaLi = parseInt(respostaClicada.classList[1].slice(-1));
 
@@ -677,6 +672,8 @@ function reiniciaQuizz() {
         perguntasResposndidas[i].classList.remove("✔️");
     }
     abreQuizz(quizzClicado)
+    const topo = document.querySelector("header");
+    topo.scrollIntoView()
 }
 
 function startLoading() {
