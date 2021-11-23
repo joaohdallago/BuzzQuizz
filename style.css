@@ -83,6 +83,34 @@ main {
     color: #EC362D;
 }
 
+.container-your-individual-quizz {
+    position: relative;
+}
+
+.container-edit-delete {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    z-index: 2;
+
+    width: 43px;
+    height: 87px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+
+    border-radius: 10px 0px 0px 11px;
+    background-color: #EC362D;
+}
+
+.container-edit-delete ion-icon {
+    font-size: 20px;
+
+    color: #fff;
+}
+
 .quizz-creation {
     display: flex;
     flex-direction: column;
@@ -125,7 +153,7 @@ main {
 .quizz-creation header, h3 {
     all: unset;
 
-    width: 341px;
+    width: 95%;
 
     display: flex;
     justify-content: space-between;
@@ -143,7 +171,7 @@ main {
 }
 
 .quizz-creation form input, .quizz-creation form textarea {
-    width: 341px;
+    width: 95%;
     height: 46px;
 
     border: 1px solid #D1D1D1;
@@ -169,7 +197,7 @@ main {
 }
 
 .quizz-creation button {
-    width: 324px;
+    width: 70%;
     height: 54px;
 
     font-size: 18px;
@@ -442,4 +470,12 @@ h1 {
     text-align: center;
 }
 
-   
+@media (min-width: 600px) {
+    .quizz-creation {
+        width: 600px;
+
+        margin: 0 auto;
+    }
+
+}
+
