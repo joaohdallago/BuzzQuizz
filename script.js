@@ -1,4 +1,6 @@
 const main = document.querySelector('main');
+const loadingPacman = document.querySelector('.pacman-loading');
+console.log(loadingPacman);
 
 let newQuizz = {
 	title: "",
@@ -8,6 +10,8 @@ let newQuizz = {
 }
 
 function openCreateQuizz() {
+    stopLoading();
+
     main.innerHTML = `
     <div class="quizz-creation">
         <h2>Comece pelo começo</h2>
@@ -270,6 +274,8 @@ function finishQuizz() {
 }
 
 function rendersQuizzes() {
+    startLoading();
+    
     getUserQuizzes();
 
     const promisse = axios.get("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes");
@@ -281,6 +287,8 @@ function rendersQuizzes() {
 let quizzesList;
 
 function loadsQuizzes(resposta) {
+    stopLoading();
+
     const ulQuizzesList = document.querySelector(".all-quizzes-list");
     const ulYourQuizzesList = document.querySelector(".your-quizzes-list");
 
@@ -339,6 +347,8 @@ function loadsQuizzes(resposta) {
 
 
 function exportQuizz(newQuizzToExport) {
+    startLoading();
+
     const promisseNewQuizz = axios.post(
         "https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes",
         newQuizzToExport);
@@ -348,6 +358,8 @@ function exportQuizz(newQuizzToExport) {
 }
     
 function successQuizzExportation(response) {
+    stopLoading();
+
     getUserQuizzes();
 
     const quizzJustCreated = response.data.id;
@@ -393,10 +405,14 @@ function abreQuizz(quizzClicado) {
     main.innerHTML = "";
             
     const idDoQuizz = quizzClicado.classList[1];
+
+    startLoading();
             
     const promessa = axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${idDoQuizz}`);
     
     promessa.then((resposta) => {
+        stopLoading();
+
         const quizzRecebido = resposta.data;
         const perguntas = quizzRecebido.questions;
         const chamadaGeraPergunta = geraPergunta(perguntas)
@@ -554,5 +570,17 @@ function selecionaResposta(resposta) {
         perguntaResposdida.classList.remove("respondida")
     }, 0.0000001)
 }
+
+function startLoading() {
+    main.classList.add("display-none");
+    loadingPacman.classList.remove("display-none");
+}
+
+function stopLoading() {
+    loadingPacman.classList.add("display-none");
+    main.classList.remove("display-none");
+}
+
+
 
 rendersQuizzes();
