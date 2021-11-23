@@ -323,8 +323,8 @@ function loadsQuizzes(resposta) {
                         <div class="sombra-quizz"></div>
                     </li>
                     <div class="container-edit-delete">
-                            <ion-icon name="create-outline" onclick="alert()"></ion-icon>
-                            <ion-icon name="trash-outline"></ion-icon>
+                            <ion-icon name="create-outline" onclick="getUserQuizzId(this)"></ion-icon>
+                            <ion-icon name="trash-outline" onclick="getUserQuizzId(this)"></ion-icon>
                     </div>
                 </div>
                 
@@ -395,7 +395,7 @@ function getUserQuizzes() {
         userQuizzesId = [];
 
     } else {
-        let userQuizzesIdString = "[" + localStorage.getItem("id").replaceAll(`"`, ``) + "]";
+        let userQuizzesIdString = "[" + localStorage.getItem("id").replaceAll(`"`, ``) + ',1427' + "]";
         userQuizzesId = JSON.parse(userQuizzesIdString);
     }
 }
@@ -581,6 +581,11 @@ function stopLoading() {
     main.classList.remove("display-none");
 }
 
+function getUserQuizzId(userQuizz) {
+    console.log(userQuizz.parentElement.parentElement.firstElementChild.classList[1]);
+
+    return userQuizz.parentElement.parentElement.firstElementChild.classList[1];
+}
 
 
 rendersQuizzes();
