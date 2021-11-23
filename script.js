@@ -1,4 +1,6 @@
 const main = document.querySelector('main');
+const loadingPacman = document.querySelector('.pacman-loading');
+console.log(loadingPacman);
 
 let newQuizz = {
 	title: "",
@@ -8,6 +10,8 @@ let newQuizz = {
 }
 
 function openCreateQuizz() {
+    stopLoading();
+
     main.innerHTML = `
     <div class="quizz-creation">
         <h2>Comece pelo começo</h2>
@@ -117,6 +121,7 @@ function proceedToCreateQuestions() {
         `;
     } else {
         document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
+        window.scrollTo(0, 0)
     };
 };
 
@@ -217,6 +222,7 @@ function proceedToCreateLevels() {
         `;
     } else {
         document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
+        window.scrollTo(0, 0)
     }
 }
 
@@ -252,81 +258,147 @@ function finishQuizz() {
         }
     )
     
-    isValid = levelsMinValues.includes('0')
+    if (isValid) {
+        isValid = levelsMinValues.includes('0')
+    }
 
     if (isValid) {
-        console.log(newQuizz);
-
         exportQuizz(newQuizz);
 
-        main.innerText = `
-        loading...
-    `;
+        main.innerText = `loading...`;
 
     } else {
         document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
+        window.scrollTo(0, 0)
     }
 }
 
 function rendersQuizzes() {
+    startLoading();
+    
+    getUserQuizzes();
+
     const promisse = axios.get("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes");
 
     promisse.then(loadsQuizzes);
     promisse.catch((erro) => console.log("deu erro ao renderizar" + erro));
 }
 
-rendersQuizzes()
+let quizzesList;
 
 function loadsQuizzes(resposta) {
+    stopLoading();
+
     const ulQuizzesList = document.querySelector(".all-quizzes-list");
-    const quizzesList = resposta.data;
+    const ulYourQuizzesList = document.querySelector(".your-quizzes-list");
+
+    quizzesList = resposta.data;
     
+    let userQuizzCounter = userQuizzesId.length - 1;
+
     for (let i = 0; i < quizzesList.length; i++) {
-        
+        if (userQuizzesId.length != 0) {
+            if (quizzesList[i].id === userQuizzesId[userQuizzCounter]) {
+                if (userQuizzesId[userQuizzesId.length - 1] === quizzesList[i].id){
+                    ulYourQuizzesList.previousElementSibling.remove();
+                    ulYourQuizzesList.previousElementSibling.remove();
+                    ulYourQuizzesList.parentElement.classList.remove("your-quizzes");
+                    ulYourQuizzesList.parentElement.classList.add("your-quizzes-updated");
+
+                    ulYourQuizzesList.innerHTML = `
+                    <div class="your-quizzes-title">
+                        <h1>Seus Quizzes</h1>
+                        <ion-icon onclick="openCreateQuizz()" name="add-circle"></ion-icon>
+                    </div>
+                    
+                    `; 
+                }
+
+                ulYourQuizzesList.innerHTML += `
+
+                <div class="container-your-individual-quizz">
+                    <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
+                        <img src="${quizzesList[i].image}" alt="thumbnail do quizz">
+                        <span>${quizzesList[i].title}</span>
+                        <div class="sombra-quizz"></div>
+                    </li>
+                    <div class="container-edit-delete">
+                            <ion-icon name="create-outline" onclick="alert()"></ion-icon>
+                            <ion-icon name="trash-outline"></ion-icon>
+                    </div>
+                </div>
+                
+                
+                `; 
+                
+                userQuizzCounter--;
+              }
+        }
+            
         ulQuizzesList.innerHTML += `
-            <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
-                <img src="${quizzesList[i].image}" alt="thumbnail do quizz">
-                <span>${quizzesList[i].title}</span>
-                <div class="sombra-quizz"></div>
-            </li>
+        <li class="quizz ${quizzesList[i].id}" onclick="abreQuizz(this)">
+        <img src="${quizzesList[i].image}" alt="thumbnail do quizz">
+        <span>${quizzesList[i].title}</span>
+        <div class="sombra-quizz"></div>
+        </li>
         `; 
     }
 }
 
+
 function exportQuizz(newQuizzToExport) {
+    startLoading();
+
     const promisseNewQuizz = axios.post(
         "https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes",
         newQuizzToExport);
-
-    promisseNewQuizz.then(successQuizzExportation); // 
-    promisseNewQuizz.catch((erro) => console.log("deu erro ao eviar quizz" + erro));
-
+        
+        promisseNewQuizz.then(successQuizzExportation); // 
+        promisseNewQuizz.catch((erro) => console.log("deu erro ao eviar quizz" + erro));    
 }
+    
+function successQuizzExportation(response) {
+    stopLoading();
 
-function successQuizzExportation() {
+    getUserQuizzes();
+
+    const quizzJustCreated = response.data.id;
+    console.log(quizzJustCreated);
+    userQuizzesId.push(quizzJustCreated);
+    localStorage.setItem("id", JSON.stringify(`${userQuizzesId}`));
+
     main.innerHTML = `
-        <div class="quizz-creation">
-            <h2>Seu quizz está pronto!</h2>
-
-            <li class="quizz">
-                <img src="${newQuizz.image}" alt="quizz background">
-                <span>${newQuizz.title}</span>
-            </li>
-
-            <button onclick="goToQuizz()">Acessar Quizz</button>
-            <div class="go-home" onclick="reloadPage()">Voltar pra home </div>
-
-        </div>
+    <div class="quizz-creation">
+        <h2>Seu quizz está pronto!</h2>
+        
+        <li class="quizz ${quizzJustCreated}">
+        <img src="${newQuizz.image}" alt="quizz background">
+        <span>${newQuizz.title}</span>
+        <div class="sombra-quizz"></div>
+        </li>
+        
+        <button onclick="abreQuizz(document.querySelector('.quizz'))">Acessar Quizz</button>
+        <div class="go-home" onclick="reloadPage()">Voltar pra home </div>
+        
+    </div>
     `;
 }
-
+    
 function reloadPage() {
     window.location.reload();
 }
 
-// function goToQuizz() {
+let userQuizzesId = [];
 
-// }
+function getUserQuizzes() {
+    if (localStorage.getItem("id") === null) {
+        userQuizzesId = [];
+
+    } else {
+        let userQuizzesIdString = "[" + localStorage.getItem("id").replaceAll(`"`, ``) + "]";
+        userQuizzesId = JSON.parse(userQuizzesIdString);
+    }
+}
 
 function abreQuizz(quizzzClicado) {
     quizzClicado = quizzzClicado
@@ -335,9 +407,13 @@ function abreQuizz(quizzzClicado) {
     
     idDoQuizz = quizzClicado.classList[1];
 
+    startLoading();
+            
     const promessa = axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${idDoQuizz}`);
-
+    
     promessa.then((resposta) => {
+        stopLoading();
+
         const quizzRecebido = resposta.data;
         const perguntas = quizzRecebido.questions;
         const chamadaGeraPergunta = geraPergunta(perguntas)
@@ -345,16 +421,16 @@ function abreQuizz(quizzzClicado) {
         const infoDasPerguntas = chamadaGeraPergunta[1];
 
         main.innerHTML += `
-            <section class="quizz-clicado">
-                <header class="thumbnaill-quizz-clicado">
-                    <img src="${quizzRecebido.image}" alt="thumbnail do quizz"> 
-                    <span>${quizzRecebido.title}</span>
-                    <div class="sombra-thumb"></div>
-                </header>
-                ${htmlPerguntas}
-            </section>
+        <section class="quizz-clicado">
+        <header class="thumbnaill-quizz-clicado">
+        <img src="${quizzRecebido.image}" alt="thumbnail do quizz"> 
+        <span>${quizzRecebido.title}</span>
+        <div class="sombra-thumb"></div>
+        </header>
+        ${htmlPerguntas}
+        </section>
         `
-
+        
         coloreTitulo(infoDasPerguntas);
         resultadoLevels = quizzRecebido.levels
     })
@@ -366,9 +442,9 @@ function geraPergunta(listaDePerguntas) {
     let contador = 0;
     for (let i = 0; i < listaDePerguntas.length; i++) {
         contador++;
-
+        
         infDasPerguntas.push({etiqueta: `pergunta${contador}`, cor: listaDePerguntas[i].color});
-
+        
         const arrayDeRespostas = listaDePerguntas[i].answers.map((resposta) => {    
             // o que vem de listaDePerguntas[i].answers não é um array exatamente, não aceita o sort
             return resposta;
@@ -379,6 +455,12 @@ function geraPergunta(listaDePerguntas) {
 
         html += `
         <section class="pergunta">
+        <header class="titulo-pergunta ${infDasPerguntas[i].etiqueta}">
+        <span>${listaDePerguntas[i].title}</span>
+        </header>       
+        <ul class="respostas">
+        ${htmlRespostas}
+        </ul> 
             <header class="titulo-pergunta ${infDasPerguntas[i].etiqueta}">
                 <span>${listaDePerguntas[i].title}</span>
             </header>       
@@ -390,7 +472,7 @@ function geraPergunta(listaDePerguntas) {
     }
 
     return [html, infDasPerguntas]
-
+    
 }
 
 let infUlRespostas = [];
@@ -408,12 +490,13 @@ function geraListaDeRespostas (respostas) {
     for (let i = 0; i < respostas.length; i++) {
 
         htmlDasLi += `           
-                <li class="resposta li${i}" onclick="selecionaResposta(this)">
-                    <img src="${respostas[i].image}" alt="imagem da resposta">
-                    <span>${respostas[i].text}</span>
-                    <div class="sombra-resposta hidden"></div>
-                </li>
+            <li class="resposta li${i}" onclick="selecionaResposta(this)">
+                <img src="${respostas[i].image}" alt="imagem da resposta">
+                <span>${respostas[i].text}</span>
+                <div class="sombra-resposta hidden"></div>
+            </li>
         `;
+
         infRespostas.push({
             idResposta: i,
             ehCorreta: respostas[i].isCorrectAnswer
@@ -595,3 +678,17 @@ function reiniciaQuizz() {
     }
     abreQuizz(quizzClicado)
 }
+
+function startLoading() {
+    main.classList.add("display-none");
+    loadingPacman.classList.remove("display-none");
+}
+
+function stopLoading() {
+    loadingPacman.classList.add("display-none");
+    main.classList.remove("display-none");
+}
+
+
+
+rendersQuizzes();

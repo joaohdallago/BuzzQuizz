@@ -9,24 +9,36 @@
     <title>BuzzQuizz</title>
 </head>
 <body>
-    <header>BuzzQuizz</header>
+    <header>
+        <span id="title-buzzquizz" onclick="reloadPage()">BuzzQuizz</span>
+    </header>
 
-    <main>
+    <main class="display-none">
         <section class="your-quizzes">
             <span>Você não criou nenhum quizz ainda :(</span>
     
             <button onclick="openCreateQuizz()">Criar quizz</button>
+            <ul class="your-quizzes-list"></ul>
         </section>
 
         <section class="all-quizzes">
             <h1>Todos os Quizzes</h1>
             <ul class="all-quizzes-list"></ul>
+<<<<<<< HEAD
         </section>
         
         
 
+=======
+        </section>        
+>>>>>>> e8767dde90a7c9c4ecc4d0fec71a5fa5754b7ab8
 
     </main>
+    
+    <div class="pacman-loading">
+        <img src="./Bean Eater-0.9s-210px.gif" alt="loading...">
+        Loading...
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
