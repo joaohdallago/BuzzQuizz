@@ -19,10 +19,25 @@ function openCreateQuizz() {
         <div>
             <span id="errorAlert"></span>
             <form>
-                <input type="text" id="newQuizzTitle" placeholder="Título do seu quizz">
-                <input type="text" id="newQuizzImg" placeholder="URL da imagem do seu quizz">
-                <input type="text" id="newQuizzQuestionsQty" placeholder="Quantidade de perguntas do quizz">
-                <input type="text" id="newQuizzLevelsQty" placeholder="Quantidade de níveis do quizz">
+                <div>
+                    <input type="text" id="newQuizzTitle" placeholder="Título do seu quizz">
+                    <span class="display-none">O título deve ter entre 20 e 65 caracteres</span>
+                </div>
+
+                <div>
+                    <input type="text" id="newQuizzImg" placeholder="URL da imagem do seu quizz">
+                    <span class="display-none">O valor informado não é uma URL válida</span>
+                </div>
+
+                <div>
+                    <input type="text" id="newQuizzQuestionsQty" placeholder="Quantidade de perguntas do quizz">
+                    <span class="display-none">O quizz deve ter no mínimo 3 perguntas</span>
+                </div>
+
+                <div>
+                    <input type="text" id="newQuizzLevelsQty" placeholder="Quantidade de níveis do quizz">
+                    <span class="display-none">O quizz deve ter no mínimo 2 níveis</span>
+                </div>
             </form>
         </div>
 
@@ -57,11 +72,32 @@ function proceedToCreateQuestions() {
         levelsQty: newQuizz.levels.length >= 2
     };
 
+    if (!isValid.title) {
+        document.querySelector('#newQuizzTitle').nextElementSibling.classList.remove('display-none')
+    } else {
+        document.querySelector('#newQuizzTitle').nextElementSibling.classList.add('display-none')
+    };
+
+    if (!isValid.img) {
+        document.querySelector('#newQuizzImg').nextElementSibling.classList.remove('display-none')
+    } else {
+        document.querySelector('#newQuizzImg').nextElementSibling.classList.add('display-none')
+    };
+
+    if (!isValid.questionsQty) {
+        document.querySelector('#newQuizzQuestionsQty').nextElementSibling.classList.remove('display-none')
+    } else {
+        document.querySelector('#newQuizzQuestionsQty').nextElementSibling.classList.add('display-none')
+    };
+
+    if (!isValid.levelsQty) {
+        document.querySelector('#newQuizzLevelsQty').nextElementSibling.classList.remove('display-none')
+    } else {
+        document.querySelector('#newQuizzLevelsQty').nextElementSibling.classList.add('display-none')
+    };
+
     if (
-        isValid.title &&
-        isValid.img &&
-        isValid.questionsQty &&
-        isValid.levelsQty
+        !Object.values(isValid).includes(false)
     ) {
         let questionsString = '';
 
@@ -75,8 +111,14 @@ function proceedToCreateQuestions() {
                     
                     <div class="display-none">
                         <div>
-                            <input type="text" id="questionTitle" placeholder="Texto da pergunta">
-                            <input type="text" id="questionColor" placeholder="Cor de fundo da pergunta">
+                            <div>
+                                <input type="text" id="questionTitle" placeholder="Texto da pergunta">
+                                <span class="display-none">O título deve ter no mínimo 20 caracteres</span>
+                            </div>
+                            <div>
+                                <input type="text" id="questionColor" placeholder="Cor de fundo da pergunta">
+                                <span class="display-none">A cor deve estar no formato hexadecimal</span>
+                            </div>
                         </div>
 
                         <div class="answer">
@@ -120,7 +162,6 @@ function proceedToCreateQuestions() {
         </div>
         `;
     } else {
-        document.querySelector('#errorAlert').innerHTML = 'Preencha os dados corretamente!';
         window.scrollTo(0, 0)
     };
 };
@@ -323,8 +364,8 @@ function loadsQuizzes(resposta) {
                         <div class="sombra-quizz"></div>
                     </li>
                     <div class="container-edit-delete">
-                            <ion-icon name="create-outline" onclick="getUserQuizzId(this)"></ion-icon>
-                            <ion-icon name="trash-outline" onclick="getUserQuizzId(this)"></ion-icon>
+                            <ion-icon name="create-outline" onclick="editQuizz(this)"></ion-icon>
+                            <ion-icon name="trash-outline" onclick="deleteQuizz(this)"></ion-icon>
                     </div>
                 </div>
                 
@@ -586,6 +627,19 @@ function getUserQuizzId(userQuizz) {
 
     return userQuizz.parentElement.parentElement.firstElementChild.classList[1];
 }
+
+function editQuizz(userQuizz) {
+    console.log('edit')
+    getUserQuizzId(userQuizz)
+}
+
+function deleteQuizz(userQuizz) {
+    console.log('delete')
+    getUserQuizzId(userQuizz)
+
+    
+}
+
 
 
 rendersQuizzes();
