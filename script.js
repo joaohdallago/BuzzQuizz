@@ -442,6 +442,8 @@ function getUserQuizzes() {
 }
 
 function abreQuizz(quizzzClicado) {
+    main.style.paddingTop = "0"
+
     quizzClicado = quizzzClicado
 
     main.innerHTML = "";
@@ -681,8 +683,10 @@ function poeTelaFinal(qtdDeAcertos) {
                 <header class="titulo-resultado">
                     <span>${porcentagemDeAcerto}% de acerto: ${resultadoLevels[i].title}</span>
                 </header>
-                <img src="${resultadoLevels[i].image}" alt="mensagem de resultado">
-                <p>${resultadoLevels[i].text}</p>
+                <section class="conteudo-resultado">
+                    <img src="${resultadoLevels[i].image}" alt="mensagem de resultado">
+                    <p>${resultadoLevels[i].text}</p>
+                </section>
             </section>
             <section class="opcoes-continuacao">
                 <button class="reinicia" onclick="reiniciaQuizz()">Reiniciar Quizz</button>
