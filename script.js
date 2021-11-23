@@ -323,8 +323,8 @@ function loadsQuizzes(resposta) {
                         <div class="sombra-quizz"></div>
                     </li>
                     <div class="container-edit-delete">
-                            <ion-icon name="create-outline" onclick="alert()"></ion-icon>
-                            <ion-icon name="trash-outline"></ion-icon>
+                            <ion-icon name="create-outline" onclick="getUserQuizzId(this)"></ion-icon>
+                            <ion-icon name="trash-outline" onclick="getUserQuizzId(this)"></ion-icon>
                     </div>
                 </div>
                 
@@ -395,17 +395,16 @@ function getUserQuizzes() {
         userQuizzesId = [];
 
     } else {
-        let userQuizzesIdString = "[" + localStorage.getItem("id").replaceAll(`"`, ``) + "]";
+        let userQuizzesIdString = "[" + localStorage.getItem("id").replaceAll(`"`, ``) + ',1427' + "]";
         userQuizzesId = JSON.parse(userQuizzesIdString);
     }
 }
 
-function abreQuizz(quizzzClicado) {
-    quizzClicado = quizzzClicado
-
+function abreQuizz(quizzClicado) {
+    console.log(quizzClicado);
     main.innerHTML = "";
-    
-    idDoQuizz = quizzClicado.classList[1];
+            
+    const idDoQuizz = quizzClicado.classList[1];
 
     startLoading();
             
@@ -419,6 +418,7 @@ function abreQuizz(quizzzClicado) {
         const chamadaGeraPergunta = geraPergunta(perguntas)
         const htmlPerguntas = chamadaGeraPergunta[0];
         const infoDasPerguntas = chamadaGeraPergunta[1];
+        // console.log(htmlPerguntas)
 
         main.innerHTML += `
         <section class="quizz-clicado">
@@ -428,11 +428,9 @@ function abreQuizz(quizzzClicado) {
         <div class="sombra-thumb"></div>
         </header>
         ${htmlPerguntas}
-        </section>
         `
         
         coloreTitulo(infoDasPerguntas);
-        resultadoLevels = quizzRecebido.levels
     })
 }
 
@@ -440,6 +438,7 @@ function geraPergunta(listaDePerguntas) {
     let html = "";
     let infDasPerguntas = [];
     let contador = 0;
+    
     for (let i = 0; i < listaDePerguntas.length; i++) {
         contador++;
         
@@ -469,13 +468,8 @@ function geraPergunta(listaDePerguntas) {
     
 }
 
-let infUlRespostas = [];
-let marcadorDeUl = 0;
-let contador = 1;
-let qtdDeAcertos = 0;
-let resultadoLevels = [];
-let quizzClicado = null;
-
+let infUlRespostas = []
+let marcadorDeUl = 0
 
 function geraListaDeRespostas (respostas) {
     let infRespostas = [];
@@ -514,98 +508,64 @@ function coloreTitulo (infoDasPerguntas) {
 }
 
 function marcaPClicada(elPergunta) {
-    const naoFoiClicada = !elPergunta.classList.contains("✔️");
+    elPergunta.classList.add("respondida")
 
-    if (naoFoiClicada) {
+    const identificador = parseInt(elPergunta.classList[1].slice(-1)) 
+    //pega o número em "ulxxx" classe do elemento, o que sai realmente é uma string, por isso dois iguais abaixo
 
-        elPergunta.classList.add("respondida");
-        
-        const identificador = parseInt(elPergunta.classList[1].slice(-1)); 
-        //pega o número em "ulxxx" classe do elemento, o que sai realmente é uma string, por isso dois iguais abaixo
+    let i = 0
+    while(identificador !== infUlRespostas[i].idDaUl){
+        i++
+    }
 
-        let i = 0;
-        while(identificador !== infUlRespostas[i].idDaUl){
-            i++;
-        }
+    const informacoesDaLi = infUlRespostas[i].infRespostas
 
-        const informacoesDaLi = infUlRespostas[i].infRespostas;
+    for (let j = 0; j < informacoesDaLi.length; j++) {
+        const liResposta = document.querySelector(`.ul${identificador} .li${informacoesDaLi[j].idResposta}`);
+        //percorre todas as li's da ulPergunta clicada
+        const spanDaLi = liResposta.children[1]
 
-        for (let j = 0; j < informacoesDaLi.length; j++) {
-            const liResposta = document.querySelector(`.ul${identificador} .li${informacoesDaLi[j].idResposta}`);
-            //percorre todas as li's da ulPergunta clicada
-            const spanDaLi = liResposta.children[1];
+        if(informacoesDaLi[j].ehCorreta === true) {
+            spanDaLi.style.color = "#009C22" 
+        } else {
+            spanDaLi.style.color = "#FF0B0B" 
+        }   
+    }
 
-            if(informacoesDaLi[j].ehCorreta === true) {
-                spanDaLi.style.color = "#009C22"; 
-            } else {
-                spanDaLi.style.color = "#FF0B0B"; 
-            }   
-        }
-        //Daqui pra cima ela marca a pergunta clicada com as cores devidas nos spans, daqui pra baixo ela cuida de scrollar pra próxima pergunta e de testar se já é hora de exibir a tela final
-        
-        const proximaPergunta = document.querySelector(`.pergunta${identificador + 1}`);
-        
-        const primeiraVez = contador === 1;
-
-            setTimeout(() => 
-            {
-                respondidas = document.querySelectorAll(".✔️");
-                
-                const todasRespondidas = infUlRespostas.length === respondidas.length;
-    
-                const ultimaPerguntaClicada = document.querySelector(".quizz-clicado").lastElementChild.lastElementChild.classList.contains("✔️");
-
-                if (!todasRespondidas && proximaPergunta !== null) {
-                    setTimeout(() => {
-                        proximaPergunta.parentElement.scrollIntoView();
-                    }, 2000); 
-        
-                }else if(!todasRespondidas){
-                    alert("Responda todas as perguntas para ver o seu resultado!")
-                } else if (primeiraVez && ultimaPerguntaClicada) {
-
-                    poeTelaFinal(qtdDeAcertos);
-                        
-                    contador++;
-                }
-            }, 0.0000002);
-        
-    } else {
-        console.log("já foi clicada")
+    const proximaPergunta = document.querySelector(`.pergunta${identificador + 1}`);
+    console.log(proximaPergunta)
+    if (proximaPergunta !== null) {
+    setTimeout(() => {
+        proximaPergunta.scrollIntoView()
+    }, 2000) 
     }
 }
 
 function selecionaResposta(resposta) {
-    const ulNaoFoiClicada = !resposta.parentElement.classList.contains("✔️");
+    resposta.classList.add("selecionada");
 
-    if (ulNaoFoiClicada) {
-        resposta.classList.add("selecionada");
+    setTimeout(() => {
+        //selecionaResposta precisa esperar pra que a marcaPClicada cumpra sua tarefa se não o elemento pesquisado abaixo não será encontrado
+        const perguntaResposdida = document.querySelector(".respondida");
 
-        setTimeout(() => {
-            //selecionaResposta precisa esperar pra que a marcaPClicada cumpra sua tarefa se não o elemento pesquisado abaixo não será encontrado
-            const perguntaResposdida = document.querySelector(".respondida"); 
+        const respostas = perguntaResposdida.children;
+
+        for (let i = 0; i < respostas.length; i++) {
+            const sombraResposta = respostas[i].lastElementChild;
             
-            const respostas = perguntaResposdida.children;
+            const ehASelecionada = respostas[i].classList.contains("selecionada");
 
-            for (let i = 0; i < respostas.length; i++) {
-                const sombraResposta = respostas[i].lastElementChild;
-                
-                const ehASelecionada = respostas[i].classList.contains("selecionada");
-
-                if(!ehASelecionada) {
-                    sombraResposta.classList.remove("hidden");
-                }
-                
+            if(!ehASelecionada) {
+                sombraResposta.classList.remove("hidden");
             }
             resposta.classList.remove("selecionada");
             perguntaResposdida.classList.remove("respondida");
             perguntaResposdida.classList.add("✔️");
-
-        }, 0)
+        }
+    }, 0)
 
 
         marcaAcerto(resposta);
-    }
 }
 
 function marcaAcerto(respostaClicada) {
@@ -636,26 +596,6 @@ function poeTelaFinal(qtdDeAcertos) {
     for (let i = resultadoLevels.length-1; i >= 0; i--) {
         if (porcentagemDeAcerto >= resultadoLevels[i].minValue) {
             
-        main.innerHTML += `
-            <section class="resultado-quizz">
-                <header class="titulo-resultado">
-                    <span>${porcentagemDeAcerto}% de acerto: ${resultadoLevels[i].title}</span>
-                </header>
-                <img src="${resultadoLevels[i].image}" alt="mensagem de resultado">
-                <p>${resultadoLevels[i].text}</p>
-            </section>
-            <section class="opcoes-continuacao">
-                <button class="reinicia" onclick="reiniciaQuizz()">Reiniciar Quizz</button>
-                <button class="home" onclick="reloadPage()">Voltar pra home</button>
-            </section>
-        `
-
-        const telaDeResultado = document.querySelector(".titulo-resultado");
-        setTimeout(() => {
-            telaDeResultado.parentElement.scrollIntoView();
-        }, 2000); 
-
-        return
         }
     }
 }
@@ -686,6 +626,11 @@ function stopLoading() {
     main.classList.remove("display-none");
 }
 
+function getUserQuizzId(userQuizz) {
+    console.log(userQuizz.parentElement.parentElement.firstElementChild.classList[1]);
+
+    return userQuizz.parentElement.parentElement.firstElementChild.classList[1];
+}
 
 
 rendersQuizzes();
