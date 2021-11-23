@@ -14,6 +14,10 @@ body, textarea::placeholder {
     background-color: #fafafa;
 }
 
+body {
+    padding-top: 69px;
+}
+
 button, ion-icon {
     cursor: pointer;
 }
@@ -49,10 +53,6 @@ header.topbar {
     cursor: pointer;
 }
 
-main {
-    padding-top: 37px;
-}
-
 .your-quizzes {
     width: 340px;
     height: 181px;
@@ -64,7 +64,7 @@ main {
 
     padding: 0 45px;
     border: 1.5px dashed #D5D5D5;
-    margin: 69px auto 35px;
+    margin: 0 auto 35px;
 
     border-radius: 5px;
 }
@@ -124,6 +124,8 @@ main {
     flex-direction: column;
     align-items: center;
     gap: 29px;
+
+    margin-top: 34px;
 }
 
 .quizz-creation h2 {
@@ -590,7 +592,7 @@ h1 {
     .quizz-creation {
         width: 600px;
 
-        margin: 0 auto;
+        margin: 34px auto 0;
     }
 
 }
@@ -598,8 +600,7 @@ h1 {
     .your-quizzes {
         width: 80%;
 
-        margin: 40px auto 77px auto;
-
+        margin: 40px auto 77px;
     }
     
     .your-quizzes span {
