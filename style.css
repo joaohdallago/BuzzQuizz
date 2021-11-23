@@ -282,6 +282,8 @@ h1 {
     z-index: 2;
 
     word-break: normal;
+
+    cursor: pointer;
 }
 
 .quizz img, .quizz-creation img {
