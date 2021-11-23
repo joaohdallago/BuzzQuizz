@@ -1,4 +1,5 @@
 const main = document.querySelector('main');
+const loadingPacman = document.querySelector('.pacman-loading');
 
 let newQuizz = {
 	title: "",
@@ -267,6 +268,8 @@ function finishQuizz() {
 }
 
 function rendersQuizzes() {
+    startLoading();
+    
     getUserQuizzes();
 
     const promisse = axios.get("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes");
@@ -278,6 +281,8 @@ function rendersQuizzes() {
 let quizzesList;
 
 function loadsQuizzes(resposta) {
+    stopLoading();
+
     const ulQuizzesList = document.querySelector(".all-quizzes-list");
     const ulYourQuizzesList = document.querySelector(".your-quizzes-list");
 
@@ -328,6 +333,8 @@ function loadsQuizzes(resposta) {
 
 
 function exportQuizz(newQuizzToExport) {
+    startLoading();
+
     const promisseNewQuizz = axios.post(
         "https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes",
         newQuizzToExport);
@@ -337,6 +344,8 @@ function exportQuizz(newQuizzToExport) {
 }
     
 function successQuizzExportation(response) {
+    stopLoading();
+
     getUserQuizzes();
 
     const quizzJustCreated = response.data.id;
@@ -382,10 +391,14 @@ function abreQuizz(quizzClicado) {
     main.innerHTML = "";
             
     const idDoQuizz = quizzClicado.classList[1];
+
+    startLoading();
             
     const promessa = axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${idDoQuizz}`);
     
     promessa.then((resposta) => {
+        stopLoading();
+
         const quizzRecebido = resposta.data;
         const perguntas = quizzRecebido.questions;
         const chamadaGeraPergunta = geraPergunta(perguntas)
@@ -543,5 +556,17 @@ function selecionaResposta(resposta) {
         perguntaResposdida.classList.remove("respondida")
     }, 0.0000001)
 }
+
+function startLoading() {
+    main.classList.add("hidden");
+    loadingPacman.classList.remove("hidden");
+}
+
+function stopLoading() {
+    loadingPacman.classList.add("hidden");
+    main.classList.remove("hidden");
+}
+
+
 
 rendersQuizzes();
