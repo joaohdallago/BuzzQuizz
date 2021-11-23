@@ -317,6 +317,8 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 24px;
+    
+    margin-bottom: 24px;
 }
 
 .thumbnaill-quizz-clicado {
@@ -635,15 +637,21 @@ h1 {
     .resultado-quizz {
         max-width: 70%;
         margin: 0 auto;
-        
+
+        gap: 9px;
     }
 
     .resultado-quizz img {
         width: 50%;
     }
 
+    .resultado-quizz p {
+        max-width: 50%;
+    }
+
     .conteudo-resultado {
         display: flex;
+        gap: 9px;
     }
 
 }
