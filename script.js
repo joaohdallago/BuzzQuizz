@@ -315,8 +315,8 @@ function loadsQuizzes(resposta) {
                         <div class="sombra-quizz"></div>
                     </li>
                     <div class="container-edit-delete">
-                            <ion-icon name="create-outline" onclick="alert()"></ion-icon>
-                            <ion-icon name="trash-outline"></ion-icon>
+                            <ion-icon name="create-outline" onclick="alert('editar quizz')"></ion-icon>
+                            <ion-icon name="trash-outline" onclick="alert('deletar quizz')"></ion-icon>
                     </div>
                 </div>
                 
